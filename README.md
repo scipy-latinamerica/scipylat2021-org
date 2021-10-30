@@ -40,9 +40,8 @@ Cualquier colaboración para el debate es bienvenida. ¡Deje su comentario!
 
 **Estrutura da programação:** (Proposta Inicial)
 
-* -------------- * ------------------ * ------------------ *
 |    horário     |       sábado       |      domingo       |
-* -------------- * ------------------ * ------------------ *
+| -------------- | ------------------ | ------------------ |
 | 10:00 às 10:30 | Palestra           | Palestra           |
 | 10:30 às 11:00 | Palestra           | Palestra           |
 | 11:00 às 11:30 | Palestra           | Palestra           |
@@ -57,4 +56,3 @@ Cualquier colaboración para el debate es bienvenida. ¡Deje su comentario!
 | 19:00 às 19:50 | Palestra Relâmpago | Palestra Relâmpago |
 | 19:50 às 20:30 | Keynote            | Keynote            |
 | 20:30 às 21:30 | -                  | Encerramento       |
-* -------------- * ------------------ * ------------------ *
