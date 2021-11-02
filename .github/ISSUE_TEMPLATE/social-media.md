@@ -7,20 +7,14 @@ assignees: lucenacam
 
 ---
 
-### Campanha
-*Informe a campanha a qual essa arte faz parte*
-
 ### Peça/publicidade solicitada
 *Objetivamente informe a arte/publicidade que você está solicitando*
 
-### Detalhamento do uso
-*Descreva em detalhe para que essa arte será usada, exemplo: arte para divulgação dos tipos das atividades do evento, deverá existir um cartão para cada tipo*
+### Quais informações devem aparecer na arte
+*Informe as informações que você imagina que deva conter na arte*
 
 ### Data prevista para uso da arte
 *Informe a data ou período previsto para uso da arte*
-
-### Quais informações devem aparecer na arte
-*Informe as informações que você imagina que deva conter na arte*
 
 ### Quais formatos necessários
 - [ ] Quadrado
@@ -32,7 +26,7 @@ assignees: lucenacam
 - [ ] E-mail;
 - [ ] Discord;
 - [ ] Grupos do Telegram;
-- [ ] Eventos locais (Brasil + América Latina) (pedir 5min para falar sobre PyBR2021)
+- [ ] Eventos locais (Brasil + América Latina) (pedir 5min para falar sobre ScipyLat2021)
 
 > Ferramenta para verificar [acessibilidade das cores](https://www.toptal.com/designers/colorfilter/) em imagens.
 
