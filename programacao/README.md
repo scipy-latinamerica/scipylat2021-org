@@ -1,7 +1,5 @@
 # Gerar os Banners das Palestras da Scipy Latin America 2021
 
-### Fazendo o Bot Funcionar
-
 ```bash
 $ poetry install
 $ poetry run python generate_banners.py
