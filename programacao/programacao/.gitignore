@@ -1,0 +1,6 @@
+.DS_Store
+palestrantes/*
+mailchimp
+mailchimp_campaign.csv
+client_secret.json
+.ipynb_checkpoints
