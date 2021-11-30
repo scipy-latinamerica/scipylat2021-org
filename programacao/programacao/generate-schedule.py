@@ -49,6 +49,7 @@ class Activity:
     timezone: Optional[str]
     presentation_time: Optional[str]
     duration: Optional[str]
+    hide: Optional[str]
 
     @property
     def activity_id(self):
@@ -58,6 +59,10 @@ class Activity:
     @property
     def avatar(self):
         return f'{self.activity_id}.png'
+
+    @property
+    def avatar_hover(self):
+        return f'{self.activity_id}-hover.png'
 
     @property
     def first_name(self):
@@ -101,6 +106,7 @@ class Activity:
             'name': self.name,
             'pronouns': self.pronouns,
             'avatar': self.avatar,
+            'avatar_hover': self.avatar_hover,
             'bio': self.bio,
             'company': self.company,
             'job': self.job_title,
@@ -114,6 +120,7 @@ class Activity:
             'topic': self.topics,
             'presentation_time': self.presentation_time,
             'duration': self.duration,
+            'hide': self.hide,
         }
 
     def export(self):
@@ -121,8 +128,11 @@ class Activity:
         try:
             copyfile(f"./../avatars/{self.activity_id}/{self.avatar}",
                      f'palestrantes/{self.activity_id}/{self.avatar}')
+            copyfile(f"./../avatars/{self.activity_id}/{self.avatar_hover}",
+                     f'palestrantes/{self.activity_id}/{self.avatar_hover}')
         except Exception:
             copyfile("avatar-placehold.png", f'palestrantes/{self.activity_id}/{self.avatar}')
+            copyfile("avatar-placehold.png", f'palestrantes/{self.activity_id}/{self.avatar_hover}')
 
         with open(f'palestrantes/{self.activity_id}/contents.lr', 'w') as f:
             for field, value in self.fields_mapping.items():

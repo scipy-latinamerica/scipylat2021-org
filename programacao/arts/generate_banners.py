@@ -1,90 +1,141 @@
 import os
 import json
-
+import unicodedata
 from dataclasses import dataclass
+from datetime import datetime
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
+from dateutil import parser
 
 
-FONT_1 = ImageFont.truetype('fonts/Poppins-Bold.ttf', 38)
-FONT_2 = ImageFont.truetype('fonts/Poppins-Medium.ttf', 30)
+FONT_1 = ImageFont.truetype('fonts/SourceSansPro-SemiBold.ttf', 50)
+FONT_2 = ImageFont.truetype('fonts/SourceSansPro-Regular.ttf', 48)
+FONT_3 = ImageFont.truetype('fonts/Lato-Italic.ttf', 36)
+
+COLOR_1 = "#3c3c3b"
+COLOR_2 = "#00c74e"
 
 
 @dataclass
 class Talk:
     author: str
-    author_avatar: str
     title: str
-    description: str
+    job: str
+    activity_type: str
+    presentation_time: datetime
 
     @property
-    def banner_title():
-        pass
+    def activity_id(self):
+        only_ascii = unicodedata.normalize('NFKD', self.name).encode('ascii', 'ignore').decode('ascii')
+        return only_ascii.lower().replace(' ', '-')
+
+    @property
+    def conference_day(self):
+        FORMAT_SCHEDULE = "%d | %b"
+        return self.presentation_time.strftime(FORMAT_SCHEDULE)
+
+    @property
+    def conference_hour(self):
+        FORMAT_SCHEDULE = "%H h"
+        return self.presentation_time.strftime(FORMAT_SCHEDULE)
+
+    @property
+    def avatar(self):
+        return f'{self.activity_id}.png'
+
+    @property
+    def author_avatar(self):
+        return (f"./../avatars/{self.activity_id}/{self.avatar}")
+
+    @property
+    def first_name(self):
+        names = self.author.split()
+        return names[0].title()
+
+    @property
+    def last_name(self):
+        names = self.author.split()
+        return names[-1].title()
+
+    @property
+    def name(self):
+        names = self.author.split()
+        if len(names) == 1:
+            return '{0}'.format(self.first_name)
+        return '{0} {1}'.format(self.first_name, self.last_name)
+
+    @property
+    def author_job(self, threshold=45):
+        if self.job:
+            if len(self.name) + len(self.job) > threshold:
+                return [f'{self.name}', f'{self.job}']
+            return [f'{self.name} - {self.job}']
+        return [f'{self.name}']
+
+    @property
+    def splitted_title(self, threshold=45):
+        if len(self.title) < threshold:
+            return [self.title]
+
+        multiline_title = []
+        line = ''
+        for word in self.title.split(' '):
+            if len(word) + len(line) < threshold - 1:
+                line = f"{line} {word} "
+            else:
+                multiline_title.append(line)
+                line = word
+
+        multiline_title.append(line)
+        return multiline_title
 
 
-def split_text(limite, texto):
-    if len(texto) < limite:
-        return texto
+def create_instagram_banner(talk: Talk, background='background-instagram-1.png',
+                            output='talks-instagram-banners'):
 
-    texto_completo = []
-    linha = ''
-    for palavra in texto.split(' '):
-        if len(palavra) + len(linha) < limite-1:
-            linha = f"{linha}{palavra} "
-        else:
-            texto_completo.append(linha)
-            linha = palavra
-
-    texto_completo.append(linha)
-    return '\n'.join(texto_completo)
-
-
-def create_instagram_banner(talk: Talk, output='talks-instagram-banners'):
-
-    art = Image.open('background-instagram.png')
-    mask = Image.open('background-instagram-mask.png').resize((753, 753)).convert('L')
-    photo = Image.open(talk.author_avatar).resize(mask.size)
+    resize_factor = 1.8
+    art = Image.open(background)
+    photo = Image.open(talk.author_avatar).convert('RGBA')
+    new_size = (
+        int(photo.size[0] * resize_factor),
+        int(photo.size[1] * resize_factor)
+    )
+    photo = photo.resize(new_size)
+    mask = Image.alpha_composite(
+        Image.new("RGBA", photo.size),
+        photo.convert('RGBA')
+    )
+    width, height = photo.size
 
     draw = ImageDraw.Draw(art)
-    draw.text((66, 216), talk.author, ('#5c1dff'), font=FONT_1)
-    draw.text((66, 307), split_text(30, talk.description)[:295], ('#5c1dff'),
-              font=FONT_2, spacing=10)
-    talk_title = split_text(44, " " * 17 + talk.title)
-    draw.text((66, 790), talk.title, ('#5c1dff'), font=FONT_1)
 
-    file_name = '../{}/{}_{}.png'.format(
-        output, talk.author.lower(), talk_title.strip()
-    ).replace(" ", "-")
+    coors = (540, 600)
+    for line in talk.splitted_title:
+        text_width, text_height = draw.textsize(line, FONT_1)
+        draw.text(coors, line, (COLOR_1), font=FONT_1, anchor="mm")
+        coors = (coors[0], coors[1] + text_height)
 
-    art.paste(photo, (597, 94), mask)
-    art.save(file_name)
+    # (540, 800)
+    coors = (coors[0], coors[1] + 15)
+    for line in talk.author_job:
+        text_width, text_height = draw.textsize(line, FONT_1)
+        draw.text(coors, line, (COLOR_2), font=FONT_3, anchor="mm")
+        coors = (coors[0], coors[1] + text_height)
 
+    draw.text((90, 970), talk.activity_type.upper(), (COLOR_1), font=FONT_1, anchor="lm")
+    draw.text((540, 970), talk.conference_day.upper(), (COLOR_1), font=FONT_1, anchor="mm")
+    draw.text((990, 970), talk.conference_hour.upper(), (COLOR_1), font=FONT_1, anchor="rm")
 
-def create_twitter_banner(talk: Talk, output='talks-twitter-banners'):
-    art = Image.open('background-twitter.png')
-    mask = Image.open('background-twitter-mask.png').resize((753, 753)).convert('L')
-    photo = Image.open(talk.author_avatar).resize(mask.size)
+    art.paste(photo, (540 - int(width / 2), 354 - int(height / 2)), mask)
 
-    draw = ImageDraw.Draw(art)
-    draw.text((66, 216), talk.author, ('#5c1dff'), font=FONT_1)
-    draw.text((66, 307), split_text(30, talk.description)[:295], ('#5c1dff'),
-              font=FONT_2, spacing=10)
-    talk_title = split_text(44, " " * 17 + talk.title)
-    draw.text((66, 790), talk.title, ('#5c1dff'), font=FONT_1)
-
-    file_name = '../{}/{}_{}.png'.format(
-        output, talk.author.lower(), talk_title.strip()
-    ).replace(" ", "-")
-
-    art.paste(photo, (597, 94), mask)
+    file_name = f'../{output}/{talk.activity_id}_{background}'
     art.save(file_name)
 
 
 if __name__ == '__main__':
 
     banner_paths = [
-        'talks-twitter-banners',
         'talks-instagram-banners'
     ]
     for path in banner_paths:
@@ -93,9 +144,20 @@ if __name__ == '__main__':
     with open("../programacao.json", 'r') as f:
         programacao = json.load(f)
 
-    for talk in [Talk(**item) for item in programacao]:
+    talks = []
+    for item in programacao:
+        talks.append(
+            Talk(**{'author': item['full_name'],
+                    'title': item['title'],
+                    'job': item['job_title'],
+                    'activity_type': item['activity_type'],
+                    'presentation_time': parser.parse(item['presentation_time'])
+                    })
+        )
+
+    for talk in talks:
         try:
-            create_instagram_banner(talk)
-            create_twitter_banner(talk)
+            for n in range(1, 4):
+                create_instagram_banner(talk, background=f'background-instagram-{n}.png')
         except Exception as e:
             raise e
