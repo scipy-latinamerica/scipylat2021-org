@@ -66,7 +66,7 @@ NA DÚVIDA << Insira a sobreposição **Aguarde transmissão** >>
 ### Após o Palestrante aparecer
 1. Apresentar a palestrante e ler minibiografia da pessoa;
 2. Dar boas vindas à palestrante;
-3. Avisar que todas as dúvidas devem ser postadas em nosso canal do Discord e para ter acesso basta se inscrever no evento pelo formulário de inscrição do evento (que inclusive está na descrição do vídeo).
+3. Avisar que todas as dúvidas devem ser postadas no canal desta sala no Discord da Conferência e que para ter acesso basta se inscrever no evento pelo formulário de inscrição do evento e fazer o credenciamento no servidor (que inclusive está na descrição do vídeo).
 4. Convida para acompanhar através das redes sociais @scipyla e lembra de utilizar a hashtag #scipylat2021;
 Avisar que a programação do evento pode ser encontrada no site conf.scipy.lat;
 5. Anuncia o nome da palestra;
